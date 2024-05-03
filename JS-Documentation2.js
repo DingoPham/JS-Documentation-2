@@ -808,4 +808,57 @@
                 }
             }
             customElements.define('m-table', MISATable);
-/*-------------------------------- Phần 6: Tổng hợp MISA Coding Convention ---------------------------------*/
+        /* Lifecycle Callbacks */
+            /** 1.constructor
+             * Được gọi khi một instance của element được tạo ra.
+             * Mục Đích: Dùng để khởi tạo trạng thái ban đầu, thiết lập các biến, và bind các phương thức.
+             * Lưu ý: Không nên tương tác với DOM hoặc định nghĩa các thuộc tính quan sát trong constructor
+             */
+            /** 2.connectedCallback
+             * Được gọi khi Custom Element được chèn vào DOM
+             * Mục Đích: Thực hiện các tác vụ cần thiết sau khi element được gắn vào DOM, như thêm event listeners, bắt đầu fetching data, hoặc cập nhật rendering.
+             * Lưu ý: Đây là thời điểm thích hợp để tạo Shadow DOM.
+             */
+            /** 3.disconnectedCallback
+             * Được gọi khi Custom Element bị loại bỏ khỏi DOM
+             * Mục Đích: Dùng để dọn dẹp, chẳng hạn như loại bỏ event listeners hoặc hủy các hoạt động đang chạy
+             * Lưu ý: Hữu ích cho việc quản lý tài nguyên và tránh rò rỉ bộ nhớ.
+             */
+            /** 4.attributeChangedCallback 
+             * Được gọi khi giá trị của một thuộc tính được quan sát thay đổi
+             * Mục đích: Xử lý sự thay đổi của thuộc tính. Phương thức này cung cấp thông tin về tên thuộc tính, giá trị cũ và giá trị mới
+             * Lưu ý: Cần khai báo các thuộc tính để theo dõi trong static get observedAttributes()
+             * VD với attributeChangedCallback: thực hiện thay đổi style hiển thị các dòng dữ liệu trên table.
+             * Thực hiện set style nổi bật cho dòng dữ liệu có index tương ứng:`data-highlight = “index” ` (index là vị trí dòng)
+            */
+            /** 5.adoptedCallback
+             * Được gọi khi một Custom Element được chuyển từ một document này sang document khác, ví dụ thông qua document.adoptNode.
+             * Mục đích: Xử lý các thay đổi cần thiết sau khi element được chuyển sang một môi trường mới. Thường 
+            xuyên được sử dụng trong các trường hợp sử dụng với <iframe> hoặc các trường hợp chuyển đổi document
+             * Lưu ý: adoptedCallback không phải là phương thức thường xuyên được sử dụng, nhưng có thể hữu ích trong các tình huống cụ thể
+            (*) Mở rộng: iframe (viết tắt của "inline 
+            frame") là một thẻ HTML được sử dụng 
+            để nhúng một trang web hoặc tài liệu 
+            khác vào bên trong một trang web hiện 
+            tại. iframe tạo ra một khu vực trên trang 
+            web chứa một trang web độc lập, có thể 
+            hiển thị nội dung từ cùng một nguồn 
+            hoặc từ một nguồn khác
+            */
+           // Thực hiện khi di chuyển element từ document này sang document khác
+           adoptedCallback(){
+            this.updateStylesForList();
+           }
+           updateStylesForList(){
+            // Thay đổi style khi table được di chuyển đến iframe
+            this.style.borderColor = 'blue';
+            this.style.backgroundColor = 'lightblue';
+           }
+/*-------------------------------- Phần 6: WEB Component: SLOT ---------------------------------*/
+    /*<slot> là một phần của chuẩn Web Components, cụ thể là một phần của Shadow DOM. Nó được
+    sử dụng để định nghĩa một vùng chèn (placeholder) trong markup của Custom Element, nơi nội
+    dung từ Light DOM (DOM chính) có thể được hiển thị*/
+    /** `slot` có thể có name hoặc không
+     * `slot` không có name là slot mặc định sử dụng để chèn bất cứ một element nào không gán thuộc tính slot.
+     * `slot` có name chỉ định rõ vùng chèn cụ thể trong Shadow DOM. 
+     */
