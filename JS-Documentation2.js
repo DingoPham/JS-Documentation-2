@@ -695,5 +695,117 @@
         }
 
 /*-------------------------------- Phần 5: Web Component ---------------------------------*/
-
+    // Web Component
+        /* Web Components trong JavaScript là một tập hợp các công nghệ cho phép bạn tạo các thành phần
+        giao diện người dùng có thể tái sử dụng, bảo trì dễ dàng và không phụ thuộc vào các thư viện hay frameworks cụ thể. */
+        /** Lợi ích khi sử dụng Web Component
+         * Tái sử dụng: Dễ dàng tái sử dụng trong các dự án khác nhau.
+         * Bảo trì: Dễ dàng bảo trì do cấu trúc rõ ràng và độc lập.
+         * Hợp tác: Thuận tiện cho việc làm việc nhóm do khả năng chia nhỏ ứng dụng thành các phần nhỏ.
+         => Web Components còn hỗ trợ tích hợp với các thư viện và frameworks JavaScript hiện đại như
+        React, Angular, và Vue, nhưng cũng có thể hoạt động độc lập mà không cần chúng.
+         */
+    // Cách sử dụng Web Component
+        /** Để làm việc được với Web Component ta cần nắm được các bộ API sau: 
+         * Custom Elements: Cho phép bạn định nghĩa các thẻ HTML tùy chỉnh và hành vi của 
+        chúng. Bạn có thể tạo một thẻ mới (ví dụ: <my-custom-element>) hoặc mở rộng thẻ 
+        hiện có.
+         * Shadow DOM: Cung cấp cách để đóng gói (encapsulation) CSS và JavaScript trong 
+        một Web Component. Shadow DOM cho phép bạn gắn kèm một "bóng" DOM vào 
+        một phần tử, giúp cách ly các phần tử của bạn khỏi phần còn lại của trang, về cả CSS 
+        và JavaScript.
+         * HTML Templates: Các thẻ <template> và <slot> cho phép bạn tạo mẫu (templates) 
+        có thể tái sử dụng. Mẫu này không được hiển thị trên trang web cho đến khi nó 
+        được "kích hoạt" bởi JavaScript.
+        */
+    // Cách tạo và sử dụng Web Component
+        /** Để sử dụng Web Component chúng ta có thể thực hiện theo 3 bước sau:
+         1. Định nghĩa Custom Element.
+         2. Thêm tính năng hoặc Logic cho Custom Element.
+         3. Sử Dụng Custom Element trong HTML.
+         */
+            class MISATable extends HTMLElement{
+                constructor(){
+                    super();
+                    // Khởi tạo
+                    this.attachShadow({ mode: 'open'});
+                    this.shadowRoot.innerHTML = ` 
+                    <style>
+                        </*CSS*/
+                    </style>
+                    <table></table>
+                    `;
+                }
+                // ...
+            }
+            // Đăng ký Custom Element
+            customElements.define('m-table', MISATable);
+    // Cách tạo và sử dụng Web Component: Xử lý attribute
+        // 1. Xử lý attribute: Sử dụng attributeChangedCallback và observedAttributes để xử lý các thay đổi đối với attributes
+            // Hàm trả về attribute được theo dõi sự thay đổi
+            static get observedAttributes(){
+                return["color", "cls", "@rowblclick", "showToolbar", "showPaging"];
+            }
+            /**
+             * Hàm tự động được gọi mỗi khi attribute được liệt kê trong observerdAttribute bị thay đổi
+             */
+            attributeChangedCallback(name, oldValue, newValue){
+                if (name === "@rowdblclick"){
+                    this.rowDbClickHandler = newValue;
+                }
+                // this.update();
+            }
+    /* Cách tạo và xử dụng Web Component */
+        // Định nghĩa Custom Element
+            /** 1) Tạo class cho Custom Element
+                * class phải được mở rộng từ HTMLElement.
+                * Trong class có thể định nghĩa các phương thức lifecycle, thuộc tính và các phương thức riêng */
+            /** 2) Đăng ký Custom Element
+                * Sử dụng `customElements.define` để đăng ký custom element mới với một tên tag.
+                * Tên tag phải chứa dấu gạch ngang: (ví dụ: m-table) */
+        // Xử lý attribute
+            /** 1) Xử lý attribute 
+                * Sử dụng attributeChangedCallback và observedAttributes để xử lý các thay đổi đối với attributes
+            */
+            /** 2) Xử lý DOM và style
+                * Ta có thể truy cập Shadow DOM (this.shadowRoot) và thực hiện set HTML, định nghĩa các style tuỳ theo nhu cầu bằng nhiều cách thức
+             */
+        // Sử dụng trong HTML
+            /** 3) Sử dụng Custom Element trong HTML
+                 * Sau khi đã định nghĩa và đăng ký custom element, ta có thể sử dụng nó như bất kỳ thẻ HTML nào khác trong tài liệu HTML.
+                 * Tương tác với Custom Element qua JS cũng như với bất kỳ phần tử DOM nào khác
+             */
+            const table2 = document.querySelector('m-table');
+            table2.setAttribute('api', 'https://cukcuk.vn/api/v1/customers');
+        // Vòng đời của Custom Element 
+            /**
+             * Được quản lý bởi các Lifecycle Callbacks. Cho phép 
+            thực hiện hành động tại các thời điểm quan trọng 
+            trong vòng đời của một component, từ khi tạo ra 
+            cho đến khi bị loại bỏ khỏi DOM
+             */
+            class MISATable extends HTMLElement{
+                constructor(){ //Khởi tạo (1. constructor)
+                    super();
+                    // Khởi tạo
+                }
+                // Static getter cho observedAtrributes
+                static get observedAttributes(){
+                    return ['api', 'name', 'attr1'];
+                }
+                connectedCallback(){ // Gán vào DOM (2. connectedCallback)
+                    // Element được thêm vào DOM
+                }
+                disconnectedCallback(){ // Gỡ khỏi DOM (3. disconnectedCallback)
+                    // Element Được loại khỏi DOM
+                }
+                attributeChangedCallback(attrName, oldVal, newVal){ // Attribute thay đổi (4. attributeChangedCallback)
+                    // Thực thi khi có thuộc tính được liền kề
+                    // Trong observedAttributes thay đổi
+                }
+                adoptedCallback(){ // Element bị di chuyển sang document khác (5. adoptedCallback)
+                    // Element được di chuyển sang document khác
+                }
+            }
+            customElements.define('m-table', MISATable);
 /*-------------------------------- Phần 6: Tổng hợp MISA Coding Convention ---------------------------------*/

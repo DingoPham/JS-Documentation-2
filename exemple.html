@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <m-table api="https://cukcuk.vn/api/v1/customers" @rowClick="onDblClick">
+        <m-col title="STT" type="sort"></m-col>
+        <m-col title="Mã nhân viên"></m-col>
+        <m-col title="Họ và tên"></m-col>
+        <m-col title="Giới tính"></m-col>
+        <m-col title="Ngày sinh" format="ddmmyyyy"></m-col>
+        <m-col title="Địa chỉ"></m-col>
+    </m-table>
+
+    <iframe id="tableFrame"></iframe>
+    <m-table api="https://cukcuk.vn/api/v1/customers"
+        data-highlight="3"
+        @rowDblClick="onDblClick">
+    </m-table>
+
+
+    <script>
+        // VD về slot
+        class MISATable extends HTMLElement{
+            constructor(){
+                super();
+                this.attachShadow({mode: 'open'});
+                this.shadowRoot.innerHTML = `
+                    <table>
+                        <slot></slot>
+                    <table>
+                `;
+            }
+            connectedCallback(){
+                const coloums = this.getColumnsInSlotDefault();
+                this.renderRows(coloums);
+            }
+            // Lấy các Columns Element được chèn vào trong slot:
+            getColumnsInSlotDefault(){
+                const slot = this.shadowRoot.querySelector("slot");
+                let assignedElements = slot.assignedElements({ flatten: true })
+                const coloums = assignedElements.filter(
+                    (el) => el.tagName.toLowerCase() === "m-col"
+                );
+                return coloums;
+            }
+            //...
+        }
+        customElements.define("m-table", MISATable);
+
+
+        // VD về sử dụng adoptedCallback
+        const iframeDocument = document.getElementById('tableFrame').contentDocument;
+        const tableElement = document.querySelector('m-table');
+
+        // Sau một thời gian ngắn, di chuyển table vào iframe
+        setTimeout(() => {
+           iframeDocument.body.appendChild(document.adoptNode(tableElement)); 
+        }, 3000);
+        /*Trong ví dụ thì khi chuyển table 
+        sang iframe bằng cách sử dụng 
+        document.adopNode thì sự kiện 
+        adoptedCallback được kích hoạt*/
+    </script>
+</body>
+</html>
